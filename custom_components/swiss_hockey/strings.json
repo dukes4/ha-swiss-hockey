@@ -1,0 +1,67 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Club logos",
+        "description": "This integration loads its data from data.sihf.ch, the undocumented statistics interface behind sihf.ch. It is not affiliated with the SIHF or the National League.\n\nThe club logos are the property of the clubs. If you allow it, they are downloaded once from sihf.ch and stored locally in your Home Assistant, for your own dashboards only. Without consent the cards show the club abbreviation instead.",
+        "data": {
+          "logos": "Download club logos from sihf.ch and store them locally"
+        },
+        "data_description": {
+          "logos": "You can change this later under Configure."
+        }
+      },
+      "team": {
+        "title": "Favourite club",
+        "description": "Choose your favourite club. The sensors and the 'next game' card follow this club.",
+        "data": {
+          "team_id": "Favourite club"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The clubs could not be loaded from data.sihf.ch. Please check the internet connection of Home Assistant and try again.",
+      "unknown_team": "This club is not in the current National League."
+    },
+    "abort": {
+      "single_instance_allowed": "Swiss Ice Hockey is already set up. Change the club under Configure."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Swiss Ice Hockey",
+        "data": {
+          "logos": "Download club logos from sihf.ch and store them locally",
+          "team_id": "Favourite club"
+        },
+        "data_description": {
+          "logos": "Logos already downloaded stay stored; they are no longer shown when you switch this off."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The clubs could not be loaded from data.sihf.ch. Please try again later.",
+      "unknown_team": "This club is not in the current National League."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "next_game": {
+        "name": "Next game"
+      },
+      "last_game": {
+        "name": "Last game"
+      },
+      "form": {
+        "name": "Form"
+      },
+      "rank": {
+        "name": "Rank"
+      },
+      "points": {
+        "name": "Points"
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vereinslogos",
+        "description": "Diese Integration bezieht ihre Daten von data.sihf.ch, der nicht dokumentierten Statistik-Schnittstelle hinter sihf.ch. Sie steht in keiner Verbindung zur SIHF oder zur National League.\n\nDie Vereinslogos sind Eigentum der Vereine. Wenn du es erlaubst, werden sie einmalig von sihf.ch heruntergeladen und lokal in deinem Home Assistant gespeichert, nur für deine eigenen Dashboards. Ohne Freigabe zeigen die Karten stattdessen das Vereinskürzel.",
+        "data": {
+          "logos": "Vereinslogos von sihf.ch herunterladen und lokal speichern"
+        },
+        "data_description": {
+          "logos": "Lässt sich später unter Konfigurieren ändern."
+        }
+      },
+      "team": {
+        "title": "Lieblingsverein",
+        "description": "Wähle deinen Lieblingsverein. Die Sensoren und die Karte 'Nächstes Spiel' richten sich nach diesem Verein.",
+        "data": {
+          "team_id": "Lieblingsverein"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Die Vereine konnten nicht von data.sihf.ch geladen werden. Bitte die Internetverbindung von Home Assistant prüfen und erneut versuchen.",
+      "unknown_team": "Dieser Verein ist nicht in der aktuellen National League."
+    },
+    "abort": {
+      "single_instance_allowed": "Swiss Ice Hockey ist bereits eingerichtet. Den Verein änderst du unter Konfigurieren."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Swiss Ice Hockey",
+        "data": {
+          "logos": "Vereinslogos von sihf.ch herunterladen und lokal speichern",
+          "team_id": "Lieblingsverein"
+        },
+        "data_description": {
+          "logos": "Bereits geladene Logos bleiben gespeichert, werden beim Ausschalten aber nicht mehr angezeigt."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Die Vereine konnten nicht von data.sihf.ch geladen werden. Bitte später erneut versuchen.",
+      "unknown_team": "Dieser Verein ist nicht in der aktuellen National League."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "next_game": {
+        "name": "Nächstes Spiel"
+      },
+      "last_game": {
+        "name": "Letztes Spiel"
+      },
+      "form": {
+        "name": "Form"
+      },
+      "rank": {
+        "name": "Rang"
+      },
+      "points": {
+        "name": "Punkte"
+      }
+    }
+  }
+}

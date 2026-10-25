@@ -1,0 +1,179 @@
+{
+ "title": "Rangliste",
+ "updateDateTime": "2026-10-25T16:59:24.0000000+01:00",
+ "filters": [
+  {
+   "alias": "Season",
+   "selected": "2027",
+   "entries": [
+    {
+     "alias": "2027",
+     "name": "2026/27"
+    },
+    {
+     "alias": "2026",
+     "name": "2025/26"
+    }
+   ]
+  },
+  {
+   "alias": "Region",
+   "selected": "1",
+   "entries": [
+    {
+     "alias": "1",
+     "name": "CH"
+    }
+   ]
+  },
+  {
+   "alias": "Phase",
+   "selected": "657",
+   "entries": [
+    {
+     "alias": "657",
+     "name": "Regular Season"
+    }
+   ]
+  }
+ ],
+ "highlightedPositions": [
+  {
+   "name": "Playoffs,Play-In,,Playout",
+   "rows": [
+    6,
+    10,
+    12
+   ],
+   "style": "line"
+  }
+ ],
+ "header": [
+  {
+   "alias": "rank"
+  },
+  {
+   "alias": "team"
+  },
+  {
+   "alias": "gamesPlayed"
+  },
+  {
+   "alias": "points"
+  },
+  {
+   "alias": "pointsQuotient"
+  },
+  {
+   "alias": "gamesWonInTime"
+  },
+  {
+   "alias": "gamesWonExtraTime"
+  },
+  {
+   "alias": "gamesWonPenalty"
+  },
+  {
+   "alias": "gamesLostPenalty"
+  },
+  {
+   "alias": "gamesLostExtraTime"
+  },
+  {
+   "alias": "gamesLostInTime"
+  },
+  {
+   "alias": "goalsFor"
+  },
+  {
+   "alias": "goalsAgainst"
+  },
+  {
+   "alias": "goalsDifference"
+  },
+  {
+   "alias": "streak"
+  }
+ ],
+ "data": [
+  [
+   "1",
+   {
+    "acronym": "ZSC",
+    "clubId": 101139,
+    "id": 101139,
+    "name": "ZSC Lions",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   "15",
+   "39",
+   "2.600",
+   "11",
+   "3",
+   "0",
+   "0",
+   "0",
+   "1",
+   "63",
+   "34",
+   "29",
+   "W+W+"
+  ],
+  [
+   "2",
+   {
+    "acronym": "HCD",
+    "clubId": 101151,
+    "id": 101151,
+    "name": "HC Davos",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   "15",
+   "33",
+   "2.200",
+   "10",
+   "1",
+   "0",
+   "1",
+   "0",
+   "3",
+   "50",
+   "35",
+   "15",
+   "W+L+"
+  ],
+  [
+   "3",
+   {
+    "acronym": "SCB",
+    "clubId": 102126,
+    "id": 102126,
+    "name": "SC Bern",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   "15",
+   "30",
+   "2.000",
+   "9",
+   "1",
+   "0",
+   "0",
+   "1",
+   "4",
+   "45",
+   "40",
+   "5",
+   "L+W+"
+  ],
+  [
+   "x",
+   "not a team row"
+  ]
+ ]
+}

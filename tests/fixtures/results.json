@@ -1,0 +1,289 @@
+{
+ "header": [
+  {
+   "alias": "day"
+  },
+  {
+   "alias": "date"
+  },
+  {
+   "alias": "time"
+  },
+  {
+   "alias": "homeTeam"
+  },
+  {
+   "alias": "awayTeam"
+  },
+  {
+   "alias": "score"
+  },
+  {
+   "alias": "scorePerPeriod"
+  },
+  {
+   "alias": "decision"
+  },
+  {
+   "alias": "status"
+  },
+  {
+   "alias": "details"
+  }
+ ],
+ "data": [
+  [
+   "Fr",
+   "24.10.2026",
+   "",
+   {
+    "acronym": "HCD",
+    "clubId": 101151,
+    "id": 101151,
+    "name": "HC Davos",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "acronym": "ZSC",
+    "clubId": 101139,
+    "id": 101139,
+    "name": "ZSC Lions",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "homeTeam": "3",
+    "awayTeam": "2",
+    "type": "result"
+   },
+   {
+    "type": "periods"
+   },
+   "OT",
+   {
+    "canceled": "",
+    "id": 12,
+    "name": "Ende",
+    "percent": 100,
+    "startDateTime": "2026-10-24T19:45:00+02:00",
+    "type": "gameStatus"
+   },
+   {
+    "gameId": "1",
+    "type": "linkToGameDetail"
+   },
+   {
+    "entries": [
+     "MYSPORTS"
+    ],
+    "type": "broadcasts"
+   }
+  ],
+  [
+   "So",
+   "25.10.2026",
+   "",
+   {
+    "acronym": "SCB",
+    "clubId": 102126,
+    "id": 102126,
+    "name": "SC Bern",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "acronym": "HCD",
+    "clubId": 101151,
+    "id": 101151,
+    "name": "HC Davos",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "homeTeam": "4",
+    "awayTeam": "1",
+    "type": "result"
+   },
+   {
+    "type": "periods"
+   },
+   "",
+   {
+    "canceled": false,
+    "id": 12,
+    "name": "Ende",
+    "percent": 100,
+    "startDateTime": "2026-10-25T14:00:00+01:00",
+    "type": "gameStatus"
+   },
+   {
+    "gameId": "2",
+    "type": "linkToGameDetail"
+   },
+   {
+    "entries": [
+     "MYSPORTS"
+    ],
+    "type": "broadcasts"
+   }
+  ],
+  [
+   "Di",
+   "27.10.2026",
+   "",
+   {
+    "acronym": "HCD",
+    "clubId": 101151,
+    "id": 101151,
+    "name": "HC Davos",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "acronym": "SCB",
+    "clubId": 102126,
+    "id": 102126,
+    "name": "SC Bern",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "homeTeam": "-",
+    "awayTeam": "-",
+    "type": "result"
+   },
+   {
+    "type": "periods"
+   },
+   "",
+   {
+    "canceled": false,
+    "id": 0,
+    "name": "Wie geplant",
+    "percent": 0,
+    "startDateTime": "2026-10-27T19:45:00+01:00",
+    "type": "gameStatus"
+   },
+   {
+    "gameId": "3",
+    "type": "linkToGameDetail"
+   },
+   {
+    "entries": [
+     "MYSPORTS"
+    ],
+    "type": "broadcasts"
+   }
+  ],
+  [
+   "Mi",
+   "28.10.2026",
+   "",
+   {
+    "acronym": "ZSC",
+    "clubId": 101139,
+    "id": 101139,
+    "name": "ZSC Lions",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "acronym": "HCD",
+    "clubId": 101151,
+    "id": 101151,
+    "name": "HC Davos",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "homeTeam": "-",
+    "awayTeam": "-",
+    "type": "result"
+   },
+   {
+    "type": "periods"
+   },
+   "",
+   {
+    "canceled": true,
+    "id": 0,
+    "name": "Verschoben",
+    "percent": 0,
+    "startDateTime": "2026-10-28T19:45:00+01:00",
+    "type": "gameStatus"
+   },
+   {
+    "gameId": "4",
+    "type": "linkToGameDetail"
+   },
+   {
+    "entries": [
+     "MYSPORTS"
+    ],
+    "type": "broadcasts"
+   }
+  ],
+  [
+   "Fr",
+   "30.10.2026",
+   "",
+   {
+    "acronym": "ZSC",
+    "clubId": 101139,
+    "id": 101139,
+    "name": "ZSC Lions",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "acronym": "SCB",
+    "clubId": 102126,
+    "id": 102126,
+    "name": "SC Bern",
+    "rankShift": 0,
+    "signed": false,
+    "type": "team"
+   },
+   {
+    "homeTeam": "-",
+    "awayTeam": "-",
+    "type": "result"
+   },
+   {
+    "type": "periods"
+   },
+   "",
+   {
+    "canceled": false,
+    "id": 0,
+    "name": "Wie geplant",
+    "percent": 0,
+    "startDateTime": "2026-10-30T19:45:00+01:00",
+    "type": "gameStatus"
+   },
+   {
+    "gameId": "5",
+    "type": "linkToGameDetail"
+   },
+   {
+    "entries": [
+     "MYSPORTS"
+    ],
+    "type": "broadcasts"
+   }
+  ],
+  [
+   "broken row"
+  ]
+ ]
+}

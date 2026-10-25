@@ -1,0 +1,14 @@
+{
+  "domain": "swiss_hockey",
+  "name": "Swiss Ice Hockey (National League)",
+  "codeowners": ["@dukes4"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http", "websocket_api"],
+  "documentation": "https://github.com/dukes4/ha-swiss-hockey",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/dukes4/ha-swiss-hockey/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}
