@@ -1,3 +1,5 @@
+<img src="custom_components/swiss_hockey/brand/icon.png" alt="" width="96" align="right">
+
 # Swiss Ice Hockey (National League) for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
