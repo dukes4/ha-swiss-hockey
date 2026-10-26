@@ -10,6 +10,7 @@ import voluptuous as vol
 from homeassistant.components import websocket_api
 from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http import StaticPathConfig
+from homeassistant.components.lovelace.const import LOVELACE_DATA, MODE_STORAGE
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
@@ -41,9 +42,49 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         ]
     )
     # Version in the URL so browsers load the new cards after an update.
-    add_extra_js_url(hass, f"{URL_BASE}/{CARDS_FILENAME}?v={integration.version}")
+    await _async_register_cards(hass, f"{URL_BASE}/{CARDS_FILENAME}?v={integration.version}")
     websocket_api.async_register_command(hass, ws_subscribe)
     return True
+
+
+async def _async_register_cards(hass: HomeAssistant, url: str) -> None:
+    """Make the cards known to the dashboards.
+
+    Preferred: a Lovelace resource (storage mode). The dashboard loads it on every
+    page load, also when the page was opened while Home Assistant was still starting.
+    Fallback for YAML resource mode: extra module URL in the frontend.
+    """
+    lovelace = hass.data.get(LOVELACE_DATA)
+    resources = getattr(lovelace, "resources", None)
+    if lovelace is None or lovelace.resource_mode != MODE_STORAGE or resources is None:
+        _LOGGER.debug("Lovelace resources not in storage mode, using extra module URL")
+        add_extra_js_url(hass, url)
+        return
+    if not resources.loaded:
+        await resources.async_load()
+        resources.loaded = True
+    base = url.split("?")[0]
+    for item in resources.async_items():
+        if str(item.get("url", "")).split("?")[0] == base:
+            if item.get("url") != url:
+                await resources.async_update_item(item["id"], {"res_type": "module", "url": url})
+            return
+    await resources.async_create_item({"res_type": "module", "url": url})
+
+
+async def _async_remove_cards(hass: HomeAssistant) -> None:
+    """Remove the Lovelace resource again (integration deleted)."""
+    lovelace = hass.data.get(LOVELACE_DATA)
+    resources = getattr(lovelace, "resources", None)
+    if lovelace is None or lovelace.resource_mode != MODE_STORAGE or resources is None:
+        return
+    if not resources.loaded:
+        await resources.async_load()
+        resources.loaded = True
+    base = f"{URL_BASE}/{CARDS_FILENAME}"
+    for item in list(resources.async_items()):
+        if str(item.get("url", "")).split("?")[0] == base:
+            await resources.async_delete_item(item["id"])
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: SwissHockeyConfigEntry) -> bool:
@@ -61,6 +102,10 @@ async def _async_options_updated(hass: HomeAssistant, entry: SwissHockeyConfigEn
 
 async def async_unload_entry(hass: HomeAssistant, entry: SwissHockeyConfigEntry) -> bool:
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: SwissHockeyConfigEntry) -> None:
+    await _async_remove_cards(hass)
 
 
 def _coordinator(hass: HomeAssistant) -> SwissHockeyCoordinator | None:

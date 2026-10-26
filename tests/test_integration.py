@@ -141,3 +141,24 @@ async def test_update_failed(hass: HomeAssistant, aioclient_mock: AiohttpClientM
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     assert entry.state is config_entries.ConfigEntryState.SETUP_RETRY
+
+
+async def test_cards_registered_as_lovelace_resource(hass: HomeAssistant, sihf: AiohttpClientMocker) -> None:
+    from homeassistant.components.lovelace.const import LOVELACE_DATA
+
+    from custom_components.swiss_hockey import _async_register_cards
+
+    entry = await _setup(hass, logos=False)
+    resources = hass.data[LOVELACE_DATA].resources
+    urls = [r["url"] for r in resources.async_items()]
+    assert len(urls) == 1 and urls[0].startswith("/swiss_hockey_static/swiss-hockey-cards.js?v=")
+
+    # New version: same entry is updated, no duplicate
+    await _async_register_cards(hass, "/swiss_hockey_static/swiss-hockey-cards.js?v=9.9.9")
+    urls = [r["url"] for r in resources.async_items()]
+    assert urls == ["/swiss_hockey_static/swiss-hockey-cards.js?v=9.9.9"]
+
+    # Removing the integration removes the resource
+    await hass.config_entries.async_remove(entry.entry_id)
+    await hass.async_block_till_done()
+    assert list(resources.async_items()) == []

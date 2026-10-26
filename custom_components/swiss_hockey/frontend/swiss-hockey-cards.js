@@ -7,7 +7,7 @@
  * No external dependencies. MIT License.
  */
 
-const VERSION = "0.1.1";
+const VERSION = "0.1.2";
 
 /* ------------------------------------------------------------------ texts */
 
@@ -212,6 +212,12 @@ function nextGames(data, acr, n = 5) {
     .slice(0, n);
 }
 
+// Current table position after a club name, e.g. " #5".
+function rankHtml(data, acr) {
+  const r = standing(data, acr);
+  return r ? ` <span class="rk">#${r.rank}</span>` : "";
+}
+
 function standing(data, acr) {
   return (data?.standings || []).find((r) => r.team === acr);
 }
@@ -242,7 +248,7 @@ const CSS = `
   .clickable { cursor: pointer; }
   .msg { padding: 8px 0; color: var(--secondary-text-color); }
   .rows { display: flex; flex-direction: column; }
-  .gr { display: grid; grid-template-columns: minmax(44px, auto) 20px 26px 1fr auto auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--divider-color); font-size: 14px; }
+  .gr { display: grid; grid-template-columns: 72px 20px 26px 1fr auto auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--divider-color); font-size: 14px; }
   .gr:last-child { border-bottom: none; }
   .res { font-weight: 600; font-variant-numeric: tabular-nums; }
   .wl { font-size: 11px; font-weight: 700; width: 18px; height: 18px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; color: #fff; }
@@ -250,6 +256,9 @@ const CSS = `
   .wl.l { background: var(--error-color, #db4437); }
   .sec { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--secondary-text-color); margin: 16px 0 4px; }
   ha-icon { --mdc-icon-size: 16px; color: var(--secondary-text-color); }
+  .nx { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
+  .nx .tv { font-size: 11px; font-weight: 400; color: var(--secondary-text-color); }
+  .rk { color: var(--secondary-text-color); font-weight: 400; font-size: .85em; white-space: nowrap; }
 `;
 
 /* ------------------------------------------------------------ base card */
@@ -360,9 +369,10 @@ class SwissHockeyNextGameCard extends SwissHockeyBase {
 
   get css() {
     return `
-      .match { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+      .match { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 8px; }
+      .mid { align-self: center; }
       .side { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
-      .name { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+      .name { font-size: 14px; font-weight: 500; line-height: 1.25; max-width: 100%; overflow-wrap: anywhere; }
       .mid { text-align: center; min-width: 96px; }
       .big { font-size: 30px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
       .when { font-size: 14px; color: var(--secondary-text-color); }
@@ -414,7 +424,7 @@ class SwissHockeyNextGameCard extends SwissHockeyBase {
     const side = (team) => `
       <div class="side clickable ${team === acr ? "fav" : ""}" data-club="${esc(team)}">
         ${logoHtml(this.data, team, 56)}
-        <div class="name">${esc(teamInfo(this.data, team).name)}</div>
+        <div class="name">${esc(teamInfo(this.data, team).name)}${rankHtml(this.data, team)}</div>
       </div>`;
     const tv = (g.tv || []).join(", ");
     return `
@@ -512,12 +522,12 @@ function clubHtml(hass, data, acr) {
     const opp = home ? g.away : g.home;
     const right = done
       ? `<span class="res">${home ? g.hs : g.as}:${home ? g.as : g.hs}${g.dec ? " " + esc(g.dec) : ""}</span><span class="wl ${result(g, acr) === "W" ? "w" : "l"}">${result(g, acr)}</span>`
-      : `<span class="res">${isLive(g) ? `<span class="badge live">${g.hs ?? 0}:${g.as ?? 0}</span>` : esc(timeOf(hass, g.start))}</span><span class="small muted">${esc((g.tv || [])[0] || "")}</span>`;
+      : `<span class="res nx">${isLive(g) ? `<span class="badge live">${g.hs ?? 0}:${g.as ?? 0}</span>` : esc(timeOf(hass, g.start))}<span class="tv">${esc((g.tv || [])[0] || "")}</span></span><span></span>`;
     return `<div class="gr">
       <span class="small muted" style="white-space:nowrap">${esc(done ? shortDate(hass, g.start) : dayLabel(hass, g.start))}</span>
       <ha-icon icon="${home ? "mdi:home" : "mdi:airplane"}" title="${esc(t(hass, home ? "home" : "away"))}"></ha-icon>
       <span class="clickable" data-club="${esc(opp)}">${logoHtml(data, opp, 22)}</span>
-      <span class="clickable" data-club="${esc(opp)}">${esc(teamInfo(data, opp).name)}</span>
+      <span class="clickable" data-club="${esc(opp)}">${esc(teamInfo(data, opp).name)}${rankHtml(data, opp)}</span>
       ${right}
     </div>`;
   };

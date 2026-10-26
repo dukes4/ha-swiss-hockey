@@ -45,6 +45,14 @@ All data comes from **`data.sihf.ch`**, the statistics interface used by the Swi
 
 Tapping a club in the *Standings* or *Next game* card opens the club view as a pop-up.
 
+## Screenshots
+
+| Next game | Standings | Club (also as pop-up) |
+|---|---|---|
+| <img src="docs/card-next-game.png" alt="Next game card" width="300"> | <img src="docs/card-standings.png" alt="Standings card" width="300"> | <img src="docs/card-club.png" alt="Club card" width="300"> |
+
+<sub>Screenshots taken with logo consent enabled. The club logos are the property of the respective clubs; they are not part of this integration and are only downloaded to your own Home Assistant after your consent. Without consent the cards show the club abbreviation instead.</sub>
+
 ## Club logos
 
 The integration does **not** contain any logos. If you give your consent during setup, the logos are downloaded once from `sihf.ch` and stored locally in your Home Assistant (`/config/www/swiss_hockey/logos`). They remain the property of the respective clubs and are only shown on your own dashboards. Without consent, the cards show the club abbreviation in a circle instead.
@@ -122,6 +130,10 @@ Alle Daten stammen von **`data.sihf.ch`**, der Statistik-Schnittstelle, welche d
 2. Integration in HACS herunterladen und Home Assistant **neu starten**.
 3. **Einstellungen → Geräte & Dienste → Integration hinzufügen →** *Swiss Ice Hockey*.
 4. Bei der Einrichtung gibst du frei, ob die Vereinslogos heruntergeladen werden dürfen, und wählst deinen Lieblingsverein. Beides lässt sich später unter *Konfigurieren* ändern.
+
+### Screenshots
+
+Die Bilder oben zeigen die Karten mit Logo-Freigabe. Die Logos sind Eigentum der Vereine und nicht Teil dieser Integration.
 
 ### Vereinslogos
 
