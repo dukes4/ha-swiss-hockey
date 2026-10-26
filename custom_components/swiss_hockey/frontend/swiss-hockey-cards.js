@@ -242,7 +242,7 @@ const CSS = `
   .clickable { cursor: pointer; }
   .msg { padding: 8px 0; color: var(--secondary-text-color); }
   .rows { display: flex; flex-direction: column; }
-  .gr { display: grid; grid-template-columns: 52px 20px 26px 1fr auto auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--divider-color); font-size: 14px; }
+  .gr { display: grid; grid-template-columns: minmax(44px, auto) 20px 26px 1fr auto auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--divider-color); font-size: 14px; }
   .gr:last-child { border-bottom: none; }
   .res { font-weight: 600; font-variant-numeric: tabular-nums; }
   .wl { font-size: 11px; font-weight: 700; width: 18px; height: 18px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; color: #fff; }
@@ -514,7 +514,7 @@ function clubHtml(hass, data, acr) {
       ? `<span class="res">${home ? g.hs : g.as}:${home ? g.as : g.hs}${g.dec ? " " + esc(g.dec) : ""}</span><span class="wl ${result(g, acr) === "W" ? "w" : "l"}">${result(g, acr)}</span>`
       : `<span class="res">${isLive(g) ? `<span class="badge live">${g.hs ?? 0}:${g.as ?? 0}</span>` : esc(timeOf(hass, g.start))}</span><span class="small muted">${esc((g.tv || [])[0] || "")}</span>`;
     return `<div class="gr">
-      <span class="small muted">${esc(done ? shortDate(hass, g.start) : dayLabel(hass, g.start))}</span>
+      <span class="small muted" style="white-space:nowrap">${esc(done ? shortDate(hass, g.start) : dayLabel(hass, g.start))}</span>
       <ha-icon icon="${home ? "mdi:home" : "mdi:airplane"}" title="${esc(t(hass, home ? "home" : "away"))}"></ha-icon>
       <span class="clickable" data-club="${esc(opp)}">${logoHtml(data, opp, 22)}</span>
       <span class="clickable" data-club="${esc(opp)}">${esc(teamInfo(data, opp).name)}</span>
