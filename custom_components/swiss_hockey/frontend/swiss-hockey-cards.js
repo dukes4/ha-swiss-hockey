@@ -7,7 +7,7 @@
  * No external dependencies. MIT License.
  */
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 
 /* ------------------------------------------------------------------ texts */
 
@@ -36,6 +36,10 @@ const TEXT = {
     source: "Data: data.sihf.ch",
     today: "Today",
     tomorrow: "Tomorrow",
+    favouriteClub: "Favourite club",
+    clubHelp: "Leave on 'Favourite club' to follow the club chosen when setting up the integration.",
+    title: "Title",
+    compact: "Compact (abbreviations only)",
   },
   de: {
     loading: "Lade Daten der National League…",
@@ -61,6 +65,10 @@ const TEXT = {
     source: "Daten: data.sihf.ch",
     today: "Heute",
     tomorrow: "Morgen",
+    favouriteClub: "Lieblingsverein",
+    clubHelp: "Auf 'Lieblingsverein' lassen, dann gilt der Verein aus der Einrichtung der Integration.",
+    title: "Titel",
+    compact: "Kompakt (nur Kürzel)",
   },
 };
 
@@ -246,6 +254,27 @@ const CSS = `
 
 /* ------------------------------------------------------------ base card */
 
+// Card editor: club dropdown. Empty = favourite club from the integration setup.
+function uiHass() {
+  return document.querySelector("home-assistant")?.hass;
+}
+
+function clubForm() {
+  const hass = uiHass();
+  const d = store.data;
+  const fav = d?.favourite;
+  const favName = fav ? teamInfo(d, fav).name : "";
+  const options = [{ value: "", label: `★ ${t(hass, "favouriteClub")}${favName ? ` (${favName})` : ""}` }];
+  for (const r of d?.standings || []) {
+    options.push({ value: r.team, label: `${teamInfo(d, r.team).name} (${r.team})` });
+  }
+  return {
+    schema: [{ name: "team", selector: { select: { mode: "dropdown", options } } }],
+    computeLabel: () => t(hass, "club"),
+    computeHelper: () => t(hass, "clubHelp"),
+  };
+}
+
 class SwissHockeyBase extends HTMLElement {
   constructor() {
     super();
@@ -264,6 +293,7 @@ class SwissHockeyBase extends HTMLElement {
 
   setConfig(config) {
     this._config = { ...config };
+    if (!this._config.team) delete this._config.team; // empty = favourite club
     this._render();
   }
 
@@ -321,10 +351,7 @@ class SwissHockeyNextGameCard extends SwissHockeyBase {
   }
 
   static getConfigForm() {
-    return {
-      schema: [{ name: "team", selector: { text: {} } }],
-      computeLabel: () => "Club (abbreviation, empty = favourite club)",
-    };
+    return clubForm();
   }
 
   getCardSize() {
@@ -413,7 +440,7 @@ class SwissHockeyStandingsCard extends SwissHockeyBase {
         { name: "title", selector: { text: {} } },
         { name: "compact", selector: { boolean: {} } },
       ],
-      computeLabel: (s) => ({ title: "Title", compact: "Compact (abbreviations only)" })[s.name],
+      computeLabel: (sch) => t(uiHass(), sch.name),
     };
   }
 
@@ -512,10 +539,7 @@ class SwissHockeyClubCard extends SwissHockeyBase {
   }
 
   static getConfigForm() {
-    return {
-      schema: [{ name: "team", selector: { text: {} } }],
-      computeLabel: () => "Club (abbreviation, empty = favourite club)",
-    };
+    return clubForm();
   }
 
   getCardSize() {
