@@ -27,7 +27,9 @@ GAME_WINDOW_AFTER: Final = timedelta(hours=4)
 REQUEST_TIMEOUT: Final = 30
 
 # Frontend
-URL_BASE: Final = "/swiss_hockey_static"
+URL_BASE: Final = "/swiss_hockey_static"  # own static route (available once the integration is set up)
+LOCAL_BASE: Final = f"/local/{DOMAIN}"  # /config/www/swiss_hockey, served from the start of Home Assistant
+DATA_URL_BASE: Final = f"{DOMAIN}_url_base"
 CARDS_FILENAME: Final = "swiss-hockey-cards.js"
 LOGO_DIR: Final = "logos"  # below hass.config.path("www", DOMAIN)
 

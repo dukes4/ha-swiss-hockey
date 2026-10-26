@@ -98,7 +98,7 @@ async def test_logos_and_websocket(hass: HomeAssistant, sihf: AiohttpClientMocke
     await _setup(hass, logos=True)
     assert any("Image/Club/101151.png" in str(call[1]) for call in sihf.mock_calls)
     assert hass.states.get("sensor.hc_davos_next_game").attributes["home_logo"] == (
-        "/swiss_hockey_static/logos/101151.png"
+        "/local/swiss_hockey/logos/101151.png"
     )
 
     client = await hass_ws_client(hass)
@@ -110,7 +110,7 @@ async def test_logos_and_websocket(hass: HomeAssistant, sihf: AiohttpClientMocke
     assert event["favourite"] == "HCD"
     assert event["season"] == "2026/27"
     assert [r["team"] for r in event["standings"]] == ["ZSC", "HCD", "SCB"]
-    assert event["teams"]["HCD"]["logo"] == "/swiss_hockey_static/logos/101151.png"
+    assert event["teams"]["HCD"]["logo"] == "/local/swiss_hockey/logos/101151.png"
     assert len(event["games"]) == 4  # canceled game left out
     assert event["lines"][0] == {"after": 6, "label": "Playoffs"}
 
@@ -151,7 +151,7 @@ async def test_cards_registered_as_lovelace_resource(hass: HomeAssistant, sihf: 
     entry = await _setup(hass, logos=False)
     resources = hass.data[LOVELACE_DATA].resources
     urls = [r["url"] for r in resources.async_items()]
-    assert len(urls) == 1 and urls[0].startswith("/swiss_hockey_static/swiss-hockey-cards.js?v=")
+    assert len(urls) == 1 and urls[0].startswith("/local/swiss_hockey/swiss-hockey-cards.js?v=")
 
     # New version: same entry is updated, no duplicate
     await _async_register_cards(hass, "/swiss_hockey_static/swiss-hockey-cards.js?v=9.9.9")
@@ -162,3 +162,23 @@ async def test_cards_registered_as_lovelace_resource(hass: HomeAssistant, sihf: 
     await hass.config_entries.async_remove(entry.entry_id)
     await hass.async_block_till_done()
     assert list(resources.async_items()) == []
+
+
+async def test_cards_copied_to_www_and_old_resource_migrated(hass: HomeAssistant, sihf: AiohttpClientMocker) -> None:
+    from pathlib import Path
+
+    from homeassistant.components.lovelace import resources as ll_resources
+    from homeassistant.components.lovelace.const import LOVELACE_DATA
+
+    assert await async_setup_component(hass, "lovelace", {})
+    res = hass.data[LOVELACE_DATA].resources
+    await res.async_load()
+    res.loaded = True
+    await res.async_create_item({"res_type": "module", "url": "/swiss_hockey_static/swiss-hockey-cards.js?v=0.1.2"})
+    assert isinstance(res, ll_resources.ResourceStorageCollection)
+
+    await _setup(hass, logos=False)
+    urls = [r["url"] for r in res.async_items()]
+    assert len(urls) == 1 and urls[0].startswith("/local/swiss_hockey/swiss-hockey-cards.js?v=")
+    copied = Path(hass.config.path("www", "swiss_hockey", "swiss-hockey-cards.js"))
+    assert copied.is_file() and b"swiss-hockey-next-game" in copied.read_bytes()

@@ -17,6 +17,7 @@ from .const import (
     CONF_LOGOS,
     CONF_TEAM_ACRONYM,
     CONF_TEAM_ID,
+    DATA_URL_BASE,
     DOMAIN,
     GAME_WINDOW_AFTER,
     GAME_WINDOW_BEFORE,
@@ -102,7 +103,8 @@ class SwissHockeyCoordinator(DataUpdateCoordinator[LeagueData]):
 
     def logo_url(self, team_id: int) -> str | None:
         if team_id in self.logo_ids:
-            return f"{URL_BASE}/{LOGO_DIR}/{team_id}.png"
+            base = self.hass.data.get(DATA_URL_BASE, URL_BASE)
+            return f"{base}/{LOGO_DIR}/{team_id}.png"
         return None
 
     def _game(self, game: Game) -> dict[str, Any]:

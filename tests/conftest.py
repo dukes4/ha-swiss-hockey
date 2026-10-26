@@ -15,6 +15,16 @@ def auto_enable_custom_integrations(enable_custom_integrations):  # noqa: ARG001
 
 
 @pytest.fixture(autouse=True)
+def isolated_config_dir(request, tmp_path: Path):
+    """Write www/ files of the integration into a temporary config folder."""
+    if "hass" in request.fixturenames:
+        hass = request.getfixturevalue("hass")
+        (tmp_path / "config" / "www").mkdir(parents=True)
+        hass.config.config_dir = str(tmp_path / "config")
+    yield
+
+
+@pytest.fixture(autouse=True)
 def isolated_logo_dir(tmp_path: Path):
     """Keep downloaded test logos out of the shared test config folder."""
     folder = tmp_path / "logos"

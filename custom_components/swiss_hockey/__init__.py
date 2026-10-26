@@ -18,7 +18,7 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.loader import async_get_integration
 
-from .const import CARDS_FILENAME, DOMAIN, LOGO_DIR, URL_BASE, WS_TYPE_SUBSCRIBE
+from .const import CARDS_FILENAME, DATA_URL_BASE, DOMAIN, LOCAL_BASE, LOGO_DIR, URL_BASE, WS_TYPE_SUBSCRIBE
 from .coordinator import SwissHockeyConfigEntry, SwissHockeyCoordinator
 from .logos import logo_dir
 
@@ -33,18 +33,45 @@ _FRONTEND_DIR = Path(__file__).parent / "frontend"
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Register the cards and the websocket command once."""
     integration = await async_get_integration(hass, DOMAIN)
-    folder = logo_dir(hass)
-    await hass.async_add_executor_job(lambda: folder.mkdir(parents=True, exist_ok=True))
+    www_ready = await hass.async_add_executor_job(_prepare_www, hass)
     await hass.http.async_register_static_paths(
         [
             StaticPathConfig(f"{URL_BASE}/{CARDS_FILENAME}", str(_FRONTEND_DIR / CARDS_FILENAME), True),
-            StaticPathConfig(f"{URL_BASE}/{LOGO_DIR}", str(folder), True),
+            StaticPathConfig(f"{URL_BASE}/{LOGO_DIR}", str(logo_dir(hass)), True),
         ]
     )
+    # /local (= /config/www) is served by Home Assistant from the very start, our own
+    # route only once this integration is set up. Dashboards opened while Home
+    # Assistant is still starting can therefore only load the cards from /local.
+    # /local exists only if the www folder existed at start-up (else: next restart).
+    base = LOCAL_BASE if www_ready else URL_BASE
+    hass.data[DATA_URL_BASE] = base
     # Version in the URL so browsers load the new cards after an update.
-    await _async_register_cards(hass, f"{URL_BASE}/{CARDS_FILENAME}?v={integration.version}")
+    await _async_register_cards(hass, f"{base}/{CARDS_FILENAME}?v={integration.version}")
     websocket_api.async_register_command(hass, ws_subscribe)
     return True
+
+
+def _prepare_www(hass: HomeAssistant) -> bool:
+    """Copy the cards to /config/www/swiss_hockey. Returns True if /local is usable."""
+    www = Path(hass.config.path("www"))
+    existed = www.is_dir()
+    target = www / DOMAIN
+    target.mkdir(parents=True, exist_ok=True)
+    logo_dir(hass).mkdir(parents=True, exist_ok=True)
+    source = _FRONTEND_DIR / CARDS_FILENAME
+    dest = target / CARDS_FILENAME
+    data = source.read_bytes()
+    if not dest.is_file() or dest.read_bytes() != data:
+        tmp = dest.with_suffix(".tmp")
+        tmp.write_bytes(data)
+        tmp.replace(dest)
+    return existed
+
+
+def _is_ours(url: str) -> bool:
+    path = str(url).split("?")[0]
+    return path in (f"{URL_BASE}/{CARDS_FILENAME}", f"{LOCAL_BASE}/{CARDS_FILENAME}")
 
 
 async def _async_register_cards(hass: HomeAssistant, url: str) -> None:
@@ -63,9 +90,8 @@ async def _async_register_cards(hass: HomeAssistant, url: str) -> None:
     if not resources.loaded:
         await resources.async_load()
         resources.loaded = True
-    base = url.split("?")[0]
     for item in resources.async_items():
-        if str(item.get("url", "")).split("?")[0] == base:
+        if _is_ours(item.get("url", "")):
             if item.get("url") != url:
                 await resources.async_update_item(item["id"], {"res_type": "module", "url": url})
             return
@@ -81,9 +107,8 @@ async def _async_remove_cards(hass: HomeAssistant) -> None:
     if not resources.loaded:
         await resources.async_load()
         resources.loaded = True
-    base = f"{URL_BASE}/{CARDS_FILENAME}"
     for item in list(resources.async_items()):
-        if str(item.get("url", "")).split("?")[0] == base:
+        if _is_ours(item.get("url", "")):
             await resources.async_delete_item(item["id"])
 
 

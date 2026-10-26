@@ -7,7 +7,7 @@
  * No external dependencies. MIT License.
  */
 
-const VERSION = "0.1.2";
+const VERSION = "0.1.3";
 
 /* ------------------------------------------------------------------ texts */
 
@@ -84,6 +84,7 @@ const store = {
   error: null,
   listeners: new Set(),
   unsub: null,
+  pending: false,
   conn: null,
   timer: null,
 
@@ -99,29 +100,44 @@ const store = {
 
   async connect(hass, force = false) {
     if (!hass?.connection) return;
-    if (!force && this.conn === hass.connection && this.unsub) return;
-    this.conn = hass.connection;
-    if (this.unsub) {
-      try {
-        (await this.unsub)();
-      } catch (_e) {
-        /* already closed */
-      }
+    if (!force && this.conn === hass.connection && (this.unsub || this.pending)) return;
+    if (this.conn !== hass.connection) {
+      this.conn = hass.connection;
+      // After a restart of Home Assistant: subscribe again once it is back.
+      hass.connection.addEventListener("ready", () => this.retry(hass, 3000));
     }
-    this.unsub = hass.connection
-      .subscribeMessage((msg) => {
+    if (this.unsub) {
+      const old = this.unsub;
+      this.unsub = null;
+      old.then((fn) => fn()).catch(() => {});
+    }
+    this.pending = true;
+    const sub = hass.connection.subscribeMessage(
+      (msg) => {
         this.data = msg;
         this.error = null;
         this.notify();
-      }, { type: "swiss_hockey/subscribe" })
+      },
+      { type: "swiss_hockey/subscribe" },
+      { resubscribe: false },
+    );
+    sub
+      .then(() => {
+        this.pending = false;
+        this.unsub = sub;
+      })
       .catch((err) => {
-        this.error = err?.code || "error";
-        this.unsub = null;
+        this.pending = false;
+        // Integration not (yet) loaded, e.g. while Home Assistant is starting: try again.
+        this.error = this.data ? null : err?.code || "error";
         this.notify();
+        this.retry(hass, 10000);
       });
-    // Re-subscribe now and then (survives a reload of the integration).
+  },
+
+  retry(hass, delay) {
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.connect(hass, true), 10 * 60 * 1000);
+    this.timer = setTimeout(() => this.connect(hass, true), delay);
   },
 
   notify() {
@@ -319,7 +335,8 @@ class SwissHockeyBase extends HTMLElement {
   }
 
   _status() {
-    if (store.error) return `<div class="msg">${esc(t(this._hass, "notSetUp"))}</div>`;
+    // "not_loaded": integration installed but not ready yet (e.g. Home Assistant starting) -> keep "loading".
+    if (store.error && store.error !== "not_loaded") return `<div class="msg">${esc(t(this._hass, "notSetUp"))}</div>`;
     if (!store.data || !store.data.ready) return `<div class="msg">${esc(t(this._hass, "loading"))}</div>`;
     return null;
   }
