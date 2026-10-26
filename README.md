@@ -47,9 +47,13 @@ Tapping a club in the *Standings* or *Next game* card opens the club view as a p
 
 ## Screenshots
 
-| Next game | Standings | Club (also as pop-up) |
-|---|---|---|
-| <img src="docs/card-next-game.png" alt="Next game card" width="300"> | <img src="docs/card-standings.png" alt="Standings card" width="300"> | <img src="docs/card-club.png" alt="Club card" width="300"> |
+| Next game | Standings |
+|---|---|
+| <img src="docs/card-next-game.png" alt="Next game card" width="380"> | <img src="docs/card-standings.png" alt="Standings card" width="380"> |
+
+| Club card | Club pop-up (tap a club in any card) |
+|---|---|
+| <img src="docs/card-club.png" alt="Club card" width="380"> | <img src="docs/club-popup.png" alt="Club pop-up" width="380"> |
 
 <sub>Screenshots taken with logo consent enabled. The club logos are the property of the respective clubs; they are not part of this integration and are only downloaded to your own Home Assistant after your consent. Without consent the cards show the club abbreviation instead.</sub>
 
